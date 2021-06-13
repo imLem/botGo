@@ -3,14 +3,11 @@ package main
 import (
 	"flag"
 	"fmt"
-	//"net/http"
 	"os"
 	"os/signal"
-	//"regexp"
 	"syscall"
 
 	"botGo/commands"
-	//"botAva/data"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -32,7 +29,6 @@ func main() {
 		fmt.Println("error creating Discord session,", err)
 		return
 	}
-
 	// Register the messageCreate func as a callback for MessageCreate events.
 	dg.AddHandler(commands.SpoilerHandler)
 	dg.AddHandler(commands.AvatarHandler)

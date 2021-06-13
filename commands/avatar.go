@@ -1,21 +1,19 @@
 package commands
 
 import (
-	//"fmt"
 	"github.com/bwmarrin/discordgo"
 	"regexp"
 	"botGo/checkers"
 )
 
 var avatarCall = regexp.MustCompile(`^[Aa][Vv][Aa]`)
-
 const sizeAvatar = "2048"
 
 func AvatarHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if m.Author.ID == s.State.User.ID {
 		return
 	}
-
+	
 	var userID string
 
 	if avatarCall.MatchString(m.Content) {

@@ -2,7 +2,6 @@ package commands
 
 import (
 	"botGo/data"
-	//"fmt"
 	"github.com/bwmarrin/discordgo"
 	"os"
 	"regexp"
@@ -23,46 +22,29 @@ func AddBlockHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 		for _, user := range m.Mentions {
 			userID = user.ID
 		}
-
 		if checkers.AdminCheck(m.ChannelID, m.Author.ID, s) {
-
 			if userID != "" {
-
 				if !checkers.CheckFile("data/id/" + userID + ".json") {
 					data.TxtTest(userID)
 					s.ChannelMessageSend(m.ChannelID, "<@"+userID+"> занесен в список")
 				} else {
 					s.ChannelMessageSend(m.ChannelID, "Пользователь уже в списке")
 				}
-
 			} else {
 				s.ChannelMessageSend(m.ChannelID, "Никто не указан")
-				//fmt.Println("никто не указан")
 			}
-
 		} else {
       s.ChannelMessageSend(m.ChannelID, "Нет прав")
     }
-
-
 	}
-
 
 	if unblockCall.MatchString(m.Content) {
 		for _, user := range m.Mentions {
 			userID = user.ID
 		}
-
 		if checkers.AdminCheck(m.ChannelID, m.Author.ID, s) {
-			// perm, _ := (s.UserGuilds(100, "", ""))
-			// fmt.Println(perm[0].ID)
-			//
-
-
 			if userID != "" {
-
 				if checkers.CheckFile("data/id/" + userID + ".json") {
-					//fmt.Println(userID)
 					os.Remove("data/id/" + userID + ".json")
 					s.ChannelMessageSend(m.ChannelID, "<@"+userID+"> убран из списка")
 				} else {
@@ -71,7 +53,6 @@ func AddBlockHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 			} else {
 				s.ChannelMessageSend(m.ChannelID, "Никто не указан")
-				//fmt.Println("никто не указан")
 			}
 
 		} else {

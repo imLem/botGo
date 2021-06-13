@@ -29,5 +29,4 @@ func AdminCheck(channelID string, userID string, s *discordgo.Session) bool {
 	}
 
 	return chAdmin
-
 }

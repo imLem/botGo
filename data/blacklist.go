@@ -1,7 +1,6 @@
 package data
 
 import (
-	//"fmt"
 	"io/ioutil"
   "encoding/json"
 )
@@ -14,8 +13,6 @@ func TxtTest(id string) {
   data := User{
         ID: id,
         }
-
 	file, _ := json.MarshalIndent(data, "", " ")
-
 	_ = ioutil.WriteFile("data/id/"+id+".json", file, 0644)
 }
