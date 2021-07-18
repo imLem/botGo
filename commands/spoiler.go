@@ -1,26 +1,21 @@
 package commands
 
 import (
-	"github.com/bwmarrin/discordgo"
-	"regexp"
-  "net/http"
+	"C"
 	"botGo/checkers"
+	"net/http"
+	"regexp"
+
+	"github.com/bwmarrin/discordgo"
 )
 
 var validAva = regexp.MustCompile(`^[Ss][Pp][Oo]`)
 
 func SpoilerHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
-
-	// Ignore all messages created by the bot itself
-	// This isn't required in this specific example but it's a good practice.
 	if m.Author.ID == s.State.User.ID {
 		return
 	}
-
-
-
-
-	if checkers.CheckId(m.Author.ID) || validAva.MatchString(m.Content) {
+	if checkers.CheckBanId(s, m) || validAva.MatchString(m.Content) {
 		var urlFile string
 		var fileName string
 		var urlFile2 string
@@ -37,20 +32,14 @@ func SpoilerHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 			s.ChannelMessageSend(m.ChannelID, spoEmbed)
 		}
 		if m.Attachments != nil {
-			//fmt.Println(urlFile)
-			response, err := http.Get(urlFile) //use package "net/http"
-
+			response, err := http.Get(urlFile)
 			if err != nil {
-				//fmt.Println(err)
 				return
 			}
-
 			defer response.Body.Close()
 			newName := "SPOILER_" + fileName
 			menName := "<@" + m.Author.ID + "> отправил медиа:"
-			//fmt.Println("Number of bytes copied to STDOUT:", n)
 			s.ChannelMessageDelete(m.ChannelID, m.ID)
-			//s.ChannelFileSend(m.ChannelID, newName, response.Body)
 			s.ChannelFileSendWithMessage(m.ChannelID, menName, newName, response.Body)
 		}
 	}

@@ -1,11 +1,12 @@
 package commands
 
 import (
+	"botGo/checkers"
 	"botGo/data"
-	"github.com/bwmarrin/discordgo"
 	"os"
 	"regexp"
-  "botGo/checkers"
+
+	"github.com/bwmarrin/discordgo"
 )
 
 var blockCall = regexp.MustCompile(`^[Ff][Ii][Rr][Ee]`)
@@ -22,10 +23,10 @@ func AddBlockHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 		for _, user := range m.Mentions {
 			userID = user.ID
 		}
-		if checkers.AdminCheck(m.ChannelID, m.Author.ID, s) {
+		if checkers.AdminCheck(s, m) {
 			if userID != "" {
-				if !checkers.CheckFile("data/id/" + userID + ".json") {
-					data.TxtTest(userID)
+				if !checkers.CheckFile("data/" + checkers.CheckGuildId(s, m) + "/id/" + userID + ".json") {
+					data.TxtTest(userID, s, m)
 					s.ChannelMessageSend(m.ChannelID, "<@"+userID+"> занесен в список")
 				} else {
 					s.ChannelMessageSend(m.ChannelID, "Пользователь уже в списке")
@@ -34,30 +35,26 @@ func AddBlockHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 				s.ChannelMessageSend(m.ChannelID, "Никто не указан")
 			}
 		} else {
-      s.ChannelMessageSend(m.ChannelID, "Нет прав")
-    }
+			s.ChannelMessageSend(m.ChannelID, "Нет прав")
+		}
 	}
-
 	if unblockCall.MatchString(m.Content) {
 		for _, user := range m.Mentions {
 			userID = user.ID
 		}
-		if checkers.AdminCheck(m.ChannelID, m.Author.ID, s) {
+		if checkers.AdminCheck(s, m) {
 			if userID != "" {
-				if checkers.CheckFile("data/id/" + userID + ".json") {
-					os.Remove("data/id/" + userID + ".json")
+				if checkers.CheckFile("data/" + checkers.CheckGuildId(s, m) + "/id/" + userID + ".json") {
+					os.Remove("data/" + checkers.CheckGuildId(s, m) + "/id/" + userID + ".json")
 					s.ChannelMessageSend(m.ChannelID, "<@"+userID+"> убран из списка")
 				} else {
 					s.ChannelMessageSend(m.ChannelID, "Пользователя нет в списке")
 				}
-
 			} else {
 				s.ChannelMessageSend(m.ChannelID, "Никто не указан")
 			}
-
 		} else {
-      s.ChannelMessageSend(m.ChannelID, "Нет прав")
-    }
+			s.ChannelMessageSend(m.ChannelID, "Нет прав")
+		}
 	}
-
 }
